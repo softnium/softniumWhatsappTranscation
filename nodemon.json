@@ -1,0 +1,9 @@
+{
+  "ignore": ["helper/status.json", "controllers/statusController.js"],
+  "watch": [
+    "server.js",
+    "routes",
+    "controllers",
+    "helper/disconnectStatus.json"
+  ]
+}

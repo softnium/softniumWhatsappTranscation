@@ -1,0 +1,59 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+
+# testing
+/coverage
+
+# production
+/build
+
+# whatsapp-web.js data
+/.wwebjs_auth
+/.wwebjs_cache
+
+# session data
+/session
+
+# helper json files
+/helper
+helper/status.json
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE files
+.idea/
+.vscode/
+
+# Compiled output
+*.min.js
+*.min.css
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Cache
+.cache/
+
+# Environment variables
+.env
+
+# Package manager lock files
+yarn.lock
+package-lock.json

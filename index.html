@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WhatsApp Live Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #logs { background: #f0f0f0; padding: 10px; height: 400px; overflow: auto; white-space: pre-wrap; }
+    #qr { width: 300px; height: 300px; border: 1px solid #ccc; margin-top: 10px; }
+    #status { font-weight: bold; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>WhatsApp Live Dashboard</h1>
+
+  <h2>Client Status:</h2>
+  <p id="status">Waiting for client...</p>
+
+  <h2>QR Code:</h2>
+  <img id="qr" src="" alt="QR Code" />
+
+  <h2>Logs:</h2>
+  <pre id="logs"></pre>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const logs = document.getElementById("logs");
+    const qrImg = document.getElementById("qr");
+    const statusEl = document.getElementById("status");
+
+    // Receive logs
+    socket.on("log", data => {
+      logs.innerText += data + "\n";
+      logs.scrollTop = logs.scrollHeight;
+
+      if (data.includes("Client is ready!")) {
+        statusEl.innerText = "Client status: READY ✅";
+      }
+    });
+
+    // Receive QR codes
+    socket.on("qr", qr => {
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qr)}&size=300x300`;
+      statusEl.innerText = "Client status: QR generated ⏳";
+    });
+
+    // Optional: client ready event
+    socket.on("clientReady", ready => {
+      statusEl.innerText = ready ? "Client status: READY ✅" : "Client status: waiting...";
+    });
+  </script>
+</body>
+</html>
