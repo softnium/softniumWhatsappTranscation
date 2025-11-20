@@ -3,6 +3,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import os from "os";
 import fs from "fs";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,4 +37,22 @@ export const emitClientReady = (ready) => {
   io.emit("clientReady", ready);
 };
 
-server.listen(PORT, () => console.log(`📊 Log dashboard running at http://localhost:${PORT}`));
+
+function getLocalIP() {
+  const nets = os.networkInterfaces();
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      if (net.family === "IPv4" && !net.internal) {
+        return net.address;
+      }
+    }
+  }
+  return "localhost";
+}
+
+const localIP = getLocalIP();
+
+server.listen(PORT, () =>
+  console.log(`📊 Log dashboard running at http://${localIP}:${PORT}`)
+);
+
