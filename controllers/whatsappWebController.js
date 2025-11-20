@@ -14,29 +14,47 @@ let client; // Declare client globally
 // const client = new Client();
 const wss = new WebSocketServer({ port: 8080 }); // WebSocket server
 
-const statusFilePath = path.resolve("helper/status.json"); // Path to store qr and clientReady
-const disconnectFilePath = path.resolve("helper/disconnectStatus.json"); // File to track disconnect status
+const statusFilePath = path.resolve("helper/status.json"); 
+const disconnectFilePath = path.resolve("helper/disconnectStatus.json");
 
-// Utility function to read from status.json
+// Ensure helper folder exists
+const ensureDirectoryExists = (filePath) => {
+  const dir = path.dirname(filePath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+};
+
+// Read status.json safely
 const readStatus = () => {
   try {
+    ensureDirectoryExists(statusFilePath);
+
+    if (!fs.existsSync(statusFilePath)) {
+      fs.writeFileSync(statusFilePath, JSON.stringify({ qr: null, clientReady: false }));
+    }
+
     const data = fs.readFileSync(statusFilePath);
     return JSON.parse(data);
   } catch (error) {
-    return { qr: null, clientReady: false }; // Default values
+    return { qr: null, clientReady: false };
   }
 };
 
 // Utility function to write to status.json
 const writeStatus = (status) => {
-  fs.writeFileSync(statusFilePath, JSON.stringify(status));
+  ensureDirectoryExists(statusFilePath);
+
+  fs.writeFileSync(statusFilePath, JSON.stringify(status, null, 2));
 };
 
 // Utility function to write the disconnect status
 const writeDisconnectStatus = (status) => {
+  ensureDirectoryExists(disconnectFilePath);
+
   fs.writeFileSync(
     disconnectFilePath,
-    JSON.stringify({ disconnected: status })
+    JSON.stringify({ disconnected: status }, null, 2)
   );
 };
 
